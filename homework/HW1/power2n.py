@@ -143,7 +143,7 @@ def human_time(seconds):
 def main():
     if hasattr(sys.stdout, "reconfigure"):      # Windows 終端機編碼問題 (cp950)
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-    n = int(sys.argv[1]) if len(sys.argv) > 1 else N
+    n = int(sys.argv[1]) if len(sys.argv) > 1 else n
     answer = 2 ** n
     print(f"測試 n = {n}，2^{n} = {answer}（共 {len(str(answer))} 位數）")
     print("=" * 78)
