@@ -2,6 +2,8 @@
 
 參考：https://en.wikipedia.org/wiki/Boolean_satisfiability_problem
 
+有使用opencode
+
 ## 我對這支程式的理解
 
 n 個變數就有 2ⁿ 種組合，所以我讓一個整數 `mask` 從 0 數到 2ⁿ − 1，
