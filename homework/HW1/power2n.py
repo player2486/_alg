@@ -2,13 +2,16 @@ import sys
 import time
 from decimal import Decimal, getcontext
 
-getcontext().prec = 15
+getcontext().prec = 15 
 
-CALL_LIMIT = 2_000_000
+
+CALL_LIMIT = 2_000_000 
 
 
 class CallLimitExceeded(Exception):
-    pass
+    def __init__(self, calls):
+        super().__init__(f"超過 {calls:,} 次呼叫仍算不完")
+        self.calls = calls
 
 
 class Counter:
@@ -55,7 +58,7 @@ def power2n_memo(n):
     counter.tick()
     if n in _TABLE:
         return _TABLE[n]
-    value = power2n_memo(n - 1) + power2n_memo(n - 1)
+    value = power2n_memo(n - 1) + power2n_memo(n - 1)   # 第二次會命中查表
     _TABLE[n] = value
     return value
 
@@ -72,17 +75,17 @@ def bench(fn, n, setup=None, repeat=None, sample_time=0.05, max_repeat=100_000):
     start = time.perf_counter()
     try:
         result = fn(n)
-    except Exception as e:
+    except Exception as e: 
         elapsed = time.perf_counter() - start
         return None, 0, None, (e, elapsed)
     one = time.perf_counter() - start
 
-    if repeat is None:
+    if repeat is None:           
         repeat = max(1, min(max_repeat, int(sample_time / one))) if one > 0 else max_repeat
 
     total = 0.0
     for _ in range(repeat):
-        if setup:
+        if setup:                  
             setup()
             reset_counter()
         start = time.perf_counter()
@@ -123,7 +126,7 @@ def human_time(seconds):
 
 
 def main():
-    if hasattr(sys.stdout, "reconfigure"):
+    if hasattr(sys.stdout, "reconfigure"):      # Windows 終端機編碼問題 (cp950)
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     n = int(sys.argv[1]) if len(sys.argv) > 1 else 100
     answer = 2 ** n
@@ -140,7 +143,7 @@ def main():
     print(f"{'方法':<34}{'耗時/次':>16}{'重複':>8}  結果")
     print("-" * 78)
 
-    rate_2a = None
+    rate_2a = None         
     for name, fn, setup in methods:
         per_call, repeat, result, err = bench(fn, n, setup=setup)
         if err is not None:
