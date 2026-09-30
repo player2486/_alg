@@ -8,8 +8,6 @@
 再傳入框架）、
 以及 **NumPy 向量運算**（`np.linalg.norm`、`np.dot`、`np.allclose` 等處理向量與矩陣的收斂判定）。
 
-一句話：**把「迭代」這件共同的事抽象成一個框架，讓各種算法只需要定義「怎麼推下一步」和「什麼時候停」。**
-
 ---
 
 ## 迭代法的核心概念
@@ -33,19 +31,19 @@ $$x_{n+1} = g(x_n)$$
 
 ---
 
-## 程式邏輯：怎麼運作
+## 怎麼運作
 
-### 核心框架 `generic_iterator`
+###  `generic_iterator`
 
 ```python
 def generic_iterator(transition_func, is_converged, initial_state, max_iter=1000):
     state = initial_state
     for iteration in range(max_iter):
-        next_state = transition_func(state)      # 推進一步
-        if is_converged(state, next_state, iteration):  # 檢查收斂
+        next_state = transition_func(state) 
+        if is_converged(state, next_state, iteration):
             return next_state, iteration + 1
         state = next_state
-    return state, max_iter  # 達到上限仍未收斂
+    return state, max_iter 
 ```
 
 **執行流程：**
@@ -59,7 +57,7 @@ def generic_iterator(transition_func, is_converged, initial_state, max_iter=1000
 
 ---
 
-## 九種經典迭代法詳解
+## 九種經典迭代法
 
 ### 1. 二維不動點迭代法 (Fixed-Point Iteration)
 
@@ -211,8 +209,6 @@ $$r_{k+1} = G \cdot r_k, \quad G = dM + \frac{1-d}{n}\mathbf{1}$$
 
 ## 執行結果（`python iter_framework.py`）
 
-> **注意：** 以下為根據算法原理推估的預期輸出，實際數值可能因機器與 NumPy 版本而略有差異。
-
 ```
 =========================================================
    全系列經典迭代演算法 - 統一抽象框架展示 (Unified Framework)
@@ -258,11 +254,6 @@ $$r_{k+1} = G \cdot r_k, \quad G = dM + \frac{1-d}{n}\mathbf{1}$$
 - **Strategy（策略）：** `transition_func` 和 `is_converged`
 - **Client（客戶端）：** 各個 `demo_*` 函式
 
-好處：
-1. **開放封閉原則：** 新增算法不需要修改框架
-2. **程式碼複用：** 收斂追蹤、迭代次數統計、安全上限都在框架中
-3. **測試容易：** 每個策略可以獨立測試
-
 ---
 
 ## 與 iterative3.py 的比較
@@ -275,15 +266,7 @@ f2 = lambda x: x - 1/4*(x*x-3) # 線性收斂
 f3 = lambda x: 1/2*(x + 3/x)   # 二次收斂（牛頓法）
 ```
 
-| 特性 | iterative3.py | iter_framework.py |
-|------|---------------|-------------------|
-| 抽象程度 | 直接寫迴圈 | 通用框架 |
-| 收斂判定 | 無（固定 20 次） | 可自訂 |
-| 狀態型別 | 純量 | 純量/向量/矩陣/Tuple |
-| 算法數量 | 3 種 | 9 種 |
-| 防呆機制 | 無 | `max_iter` 上限 |
-
-**關鍵差異：** `iterative3.py` 的 `f1` 不收斂（$|g'(\sqrt{3})| > 1$），
+**差異：** `iterative3.py` 的 `f1` 不收斂（$|g'(\sqrt{3})| > 1$），
 而 `iter_framework.py` 的 `demo_newton` 用相同的數學但加入收斂判定，確保會停下來。
 
 ---
@@ -295,5 +278,3 @@ f3 = lambda x: 1/2*(x + 3/x)   # 二次收斂（牛頓法）
 1. **共同結構：** 所有迭代法都是「推進 → 檢查 → 更新」的迴圈
 2. **差異只在：** 怎麼推進（`transition_func`）和什麼時候停（`is_converged`）
 3. **框架價值：** 把共同結構抽出來，讓新算法只需要定義這兩個函數
-
-這正是軟體工程中「不要重複自己」（DRY）原則的體現，也是函數式程式設計中「高階函數」的典型應用。
