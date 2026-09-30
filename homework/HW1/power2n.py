@@ -1,26 +1,14 @@
-"""
-power2n.py -- 計算 2^n 的四種方法與效率比較 (Issue #3)
-
-方法 1   : 內建冪次運算 2**n
-方法 2a  : 遞迴（雙倍呼叫） power2n(n-1) + power2n(n-1)
-方法 2b  : 遞迴（單次呼叫） 2 * power2n(n-1)
-方法 3   : 遞迴 + 查表（memoization）
-
-執行： python power2n.py [n]     預設 n = 100
-"""
-
 import sys
 import time
 from decimal import Decimal, getcontext
 
-getcontext().prec = 15 
+getcontext().prec = 15
 
-
-CALL_LIMIT = 2_000_000 
+CALL_LIMIT = 2_000_000
 
 
 class CallLimitExceeded(Exception):
-    """方法 2a 呼叫次數過多，主動中斷（否則 2^100 次呼叫不可能跑完）。"""
+    pass
 
 
 class Counter:
@@ -43,12 +31,10 @@ def reset_counter(limit=CALL_LIMIT):
 
 
 def power2n_builtin(n):
-    """方法 1：直接用 Python 內建的冪次運算子。"""
     return 2 ** n
 
 
 def power2n_double(n):
-    """方法 2a：power2n(n-1) + power2n(n-1)，呼叫次數 2^n - 1。"""
     counter.tick()
     if n == 0:
         return 1
@@ -56,7 +42,6 @@ def power2n_double(n):
 
 
 def power2n_times2(n):
-    """方法 2b：2 * power2n(n-1)，呼叫次數 n+1，但遞迴深度為 n。"""
     counter.tick()
     if n == 0:
         return 1
@@ -67,11 +52,10 @@ _TABLE = {0: 1}
 
 
 def power2n_memo(n):
-    """方法 3：遞迴 + 查表，只算過的值存進 _TABLE，呼叫次數約 2n+1。"""
     counter.tick()
     if n in _TABLE:
         return _TABLE[n]
-    value = power2n_memo(n - 1) + power2n_memo(n - 1)   # 第二次會命中查表
+    value = power2n_memo(n - 1) + power2n_memo(n - 1)
     _TABLE[n] = value
     return value
 
@@ -82,24 +66,23 @@ def reset_table():
 
 
 def bench(fn, n, setup=None, repeat=None, sample_time=0.05, max_repeat=100_000):
-    """回傳 (每次秒數, 重複次數, 結果值, 例外或 None)。"""
     if setup:
         setup()
     reset_counter()
     start = time.perf_counter()
     try:
         result = fn(n)
-    except Exception as e: 
+    except Exception as e:
         elapsed = time.perf_counter() - start
         return None, 0, None, (e, elapsed)
     one = time.perf_counter() - start
 
-    if repeat is None:           
+    if repeat is None:
         repeat = max(1, min(max_repeat, int(sample_time / one))) if one > 0 else max_repeat
 
     total = 0.0
     for _ in range(repeat):
-        if setup:                  
+        if setup:
             setup()
             reset_counter()
         start = time.perf_counter()
@@ -109,7 +92,6 @@ def bench(fn, n, setup=None, repeat=None, sample_time=0.05, max_repeat=100_000):
 
 
 def sci(x):
-    """把可能大到爆掉 float 的整數格式化成科學記號（用 Decimal，避免 OverflowError）。"""
     if isinstance(x, int):
         if x == 0:
             return "0.000e+0"
@@ -141,7 +123,7 @@ def human_time(seconds):
 
 
 def main():
-    if hasattr(sys.stdout, "reconfigure"):      # Windows 終端機編碼問題 (cp950)
+    if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     n = int(sys.argv[1]) if len(sys.argv) > 1 else 100
     answer = 2 ** n
@@ -158,7 +140,7 @@ def main():
     print(f"{'方法':<34}{'耗時/次':>16}{'重複':>8}  結果")
     print("-" * 78)
 
-    rate_2a = None         
+    rate_2a = None
     for name, fn, setup in methods:
         per_call, repeat, result, err = bench(fn, n, setup=setup)
         if err is not None:
