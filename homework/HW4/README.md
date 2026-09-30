@@ -12,22 +12,13 @@
 
 ## 迭代法的核心概念
 
-迭代法的精神是：**從一個初始猜測開始，反覆套用同一個規則，讓答案越來越精確，直到誤差不夠小為止。**
+**從一個初始猜測開始，反覆套用同一個規則，讓答案越來越精確，直到誤差不夠小為止。**
 
 數學上，不動點迭代的形式是：
 
 $$x_{n+1} = g(x_n)$$
 
 當 $x_n$ 不再變化（或變化夠小）時，就找到了不動點 $x^* = g(x^*)$。
-
-`generic_iterator` 把這個過程通用化：
-
-| 概念 | 框架參數 | 說明 |
-|------|----------|------|
-| 狀態 | `initial_state` | 初始猜測（純量、向量、矩陣、Tuple） |
-| 推進規則 | `transition_func` | $g(\text{state}) \to \text{next\_state}$ |
-| 收斂判定 | `is_converged` | 判斷是否達到停止條件 |
-| 安全上限 | `max_iter` | 防止無限迴圈 |
 
 ---
 
@@ -243,16 +234,6 @@ $$r_{k+1} = G \cdot r_k, \quad G = dM + \frac{1-d}{n}\mathbf{1}$$
 --- 9. EM 演算法 (Two-Coin Problem 潛在變數估計) ---
 結果: 估計硬幣機率 Theta_A = 0.7966, Theta_B = 0.5176 (耗時 12 次迭代)
 ```
-
----
-
-## 設計模式：策略模式 (Strategy Pattern)
-
-`generic_iterator` 是**策略模式**的經典應用：
-
-- **Context（上下文）：** `generic_iterator` 框架
-- **Strategy（策略）：** `transition_func` 和 `is_converged`
-- **Client（客戶端）：** 各個 `demo_*` 函式
 
 ---
 
