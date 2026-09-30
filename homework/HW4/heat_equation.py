@@ -44,7 +44,7 @@ def solve_heat_equation(n=20, max_iter=5000, tol=1e-4):
     # 邊界條件
     u[0, :] = 100.0   # 上邊
     u[-1, :] = 0.0    # 下邊
-    u[:, 0] = 50.0    # 左边
+    u[:, 0] = 50.0    # 左邊
     u[:, -1] = 50.0   # 右边
     
     # 內部點初始值（取邊界平均）
@@ -166,7 +166,10 @@ def main():
         print(f"  迭代次數：{iters2}")
         print(f"  耗時：{time2:.4f} 秒")
         print(f"  中心點溫度：{u2[n//2, n//2]:.2f}°C")
-        print(f"  加速比：{time1/time2:.1f}x")
+        if time2 > 0:
+            print(f"  加速比：{time1/time2:.1f}x")
+        else:
+            print(f"  加速比：N/A (向量化版本耗時過短)")
     
     # 詳細展示 20x20 的結果
     print(f"\n{'='*60}")
@@ -207,6 +210,7 @@ def main():
     print(f"{'迭代次數':>10} {'最大變化':>15} {'中心溫度':>12}")
     print("-" * 40)
     
+    start = time.perf_counter()
     for iteration in range(1, 201):
         u_old = u.copy()
         u[1:-1, 1:-1] = 0.25 * (
@@ -218,7 +222,8 @@ def main():
             print(f"{iteration:>10} {max_change:>15.6f} {u[10, 10]:>12.2f}")
         
         if max_change < 1e-4:
-            print(f"\n收斂於迭代 {iteration}，耗時 {time.perf_counter() - start:.4f} 秒")
+            elapsed = time.perf_counter() - start
+            print(f"\n收斂於迭代 {iteration}，耗時 {elapsed:.4f} 秒")
             break
 
 
