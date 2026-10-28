@@ -10,7 +10,6 @@ DIST = np.array([[math.dist(a, b) for b in CITIES] for a in CITIES])
 def tour_length(tour):
     return sum(DIST[tour[i], tour[(i + 1) % len(tour)]] for i in range(len(tour)))
 
-# 1. 改良法 2-opt
 def two_opt_improve(tour):
     tour, n = tour[:], len(tour)
     while True:
@@ -30,7 +29,6 @@ def two_opt_improve(tour):
         tour[i + 1:j + 1] = reversed(tour[i + 1:j + 1])
 
 
-# 2. 爬山
 def hill_climbing(iters=20000, seed=0):
     r = random.Random(seed)
     tour = list(range(N_CITIES)); r.shuffle(tour)
@@ -46,7 +44,6 @@ def hill_climbing(iters=20000, seed=0):
     return tour
 
 
-# 3. 模擬退火
 def simulated_annealing(T0=100, T_end=1e-3, alpha=0.995, per_temp=100, seed=0):
     r = random.Random(seed)
     tour = list(range(N_CITIES)); r.shuffle(tour)
@@ -66,7 +63,6 @@ def simulated_annealing(T0=100, T_end=1e-3, alpha=0.995, per_temp=100, seed=0):
     return best
 
 
-# 4. 梯度下降（連續鬆弛）
 def gradient_descent(steps=3000, lr=0.05, lam=1.0, seed=0):
     n = N_CITIES
     Dn = DIST / DIST.mean()
@@ -88,7 +84,6 @@ def gradient_descent(steps=3000, lr=0.05, lam=1.0, seed=0):
         Pm[k, :] = -1; Pm[:, i] = -1
     return tour
 
-# 5. 貪婪
 def greedy(start=0):
     unvisited = set(range(N_CITIES)) - {start}
     tour = [start]
