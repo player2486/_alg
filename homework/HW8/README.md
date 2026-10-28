@@ -49,3 +49,5 @@
 | 爬山演算法 | 20 | 352.32 | 438.13 | 506.00 |
 | 梯度下降法 | 20 | 352.32 | 416.49 | 568.80 |
 | 模擬退火法 | 5 | 352.32 | 352.32 | 352.32 |
+
+<img width="1539" height="560" alt="Figure_1" src="https://github.com/user-attachments/assets/881cf437-67ef-4fef-87cc-224813f2ee9b" />
