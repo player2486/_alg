@@ -2,7 +2,7 @@
 
 用 Python + NumPy 實作單變數與 n 變數的數值微分、數值積分，並比較「黎曼積分」與「蒙地卡羅法」。
 
-## 使用Claude，Anthropic
+## 使用Claude
 
 ## 檔案
 
